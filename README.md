@@ -1,6 +1,6 @@
 # Introduction
 - Paper name "Semantically Enhanced Attention Map-Driven Occluded Person Re-identification" . Our network named AMD-Net
-- This article was submitted for publication in “IEEE Signal processing letters”. The authors are Yiyuan Ge, M.S. and Mingxin Yu, Ph.
+- The authors are Yiyuan Ge, M.S. and Mingxin Yu, Ph.
 - We are currently providing the key code for this paper, and we promise that the full code will be released after acceptance of the article
 
 # Abstract

@@ -65,17 +65,17 @@ class GatedSpatialConv2d(_ConvNd):
             False, _pair(0), groups, bias, 'zeros')
 
         self._gate_conv = nn.Sequential(
-            nn.BatchNorm2d(in_channels + 1),
-            nn.Conv2d(in_channels + 1, in_channels + 1, 1),
+            nn.BatchNorm2d(in_channels),
+            nn.Conv2d(in_channels, in_channels, 1),
             nn.ReLU(),
-            nn.Conv2d(in_channels + 1, 1, 1),
+            nn.Conv2d(in_channels, 1, 1),
             nn.BatchNorm2d(1),
             nn.Sigmoid()
         )
 
-    def forward(self, input_features, gating_features):
+    def forward(self, input_features):
 
-        alphas = self._gate_conv(torch.cat([input_features, gating_features], dim=1))
+        alphas = self._gate_conv(input_features)
 
         input_features = (input_features * (alphas + 1))
         return F.conv2d(input_features, self.weight, self.bias, self.stride,
@@ -94,12 +94,10 @@ class TGFF(nn.Module):
         self.gate = GatedSpatialConv2d(inch, outch)
         self.conv = nn.Conv2d(in_channels=inch, out_channels=1, kernel_size=1, stride=1, bias=False)
 
-    def forward(self, x, f_x):
+    def forward(self, x):
         u_0 = x
-        u_1, delta_u_0 = self.res1(u_0)
+        u_1, delta_u_0 = self.res1(u_0)  #残差
         _, u_2 = self.res2(u_1)
-        # f_x = self.atten(x)
-        f_x = self.conv(f_x)
-        u_3_pre = self.gate(u_2, f_x)
+        u_3_pre = self.gate(u_2)
         u_3 = 3 * delta_u_0 + u_2 + u_3_pre
         return u_3
